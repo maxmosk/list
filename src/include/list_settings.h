@@ -4,9 +4,14 @@
 
 #include <math.h>
 #include <stddef.h>
+#include <stdint.h>
 
 
 #define DATA_POISON NAN
+
+#define INDEX_POISON SIZE_MAX
+
+#define NULL_INDEX ((listIndex_t) 0)
 
 
 typedef size_t listIndex_t;
