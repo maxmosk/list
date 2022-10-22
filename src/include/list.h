@@ -15,8 +15,21 @@ typedef struct
 
 typedef struct
 {
-    
+    listNode_t dummy;
+    listNode_t *nodes;
+    size_t capacity;
+
 } list_t;
+
+
+enum LIST_CODES
+{
+    LIST_SUCCESS = 0;
+
+};
+
+
+enum LIST_CODES listCtor(list_t *lst, size_t capacity);
 
 
 #endif /* LIST_H_INCLUDED__ */
