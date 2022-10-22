@@ -8,7 +8,7 @@ static listNode_t *listAlloc(size_t nmemb);
 
 static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb);
 
-static void listDump(list_t *lst);
+static void listDump(const list_t *lst);
 
 
 /*(---------------------------------------------------------------------------*/
@@ -83,15 +83,20 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 
 
     listDump(lst);
-    lst->nodes[lst->dummy.prev].next = lst->free;
-    lst->nodes[lst->nodes[lst->dummy.prev].next].prev = lst->dummy.next;
-    lst->dummy.prev = lst->nodes[lst->dummy.prev].next;
-    lst->nodes[lst->dummy.prev].next = NULL_INDEX;
-    lst->free = lst->nodes[lst->free].next;
+    if (lst->dummy.next == NULL_INDEX && lst->dummy.prev == NULL_INDEX)
+    {
+    }
+    else
+    {
+        lst->nodes[lst->dummy.prev].next = lst->free;
+        lst->nodes[lst->nodes[lst->dummy.prev].next].prev = lst->dummy.next;
+        lst->dummy.prev = lst->nodes[lst->dummy.prev].next;
+        lst->nodes[lst->dummy.prev].next = NULL_INDEX;
+        lst->free = lst->nodes[lst->free].next;
     
-    lst->nodes[lst->dummy.prev].data = newelem;
+        lst->nodes[lst->dummy.prev].data = newelem;
+    }
     listDump(lst);
-
 
 
     return lst->dummy.prev;
@@ -124,33 +129,49 @@ static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
-static void listDump(list_t *lst)
+static void listDump(const list_t *lst)
 {
     CHECK(NULL != lst, ;);
     CHECK(NULL != lst->nodes, ;);
 
+    LOGOPEN();
     
-    printf("data: ");
+    LOGPRINTF("list_t [%p]\n", (const void *) lst);
+    LOGPRINTF("{\n");
+
+    LOGPRINTF("    capacity = %zu\n", lst->capacity);
+    LOGPRINTF("    free = %zu\n", lst->free);
+
+    LOGPRINTF("    dummy\n");
+    LOGPRINTF("    {\n");
+    LOGPRINTF("    data = %20lg\n", lst->dummy.data);
+    LOGPRINTF("    next = %20zu\n", lst->dummy.next);
+    LOGPRINTF("    prev = %20zu\n", lst->dummy.prev);
+    LOGPRINTF("    }\n");
+
+    LOGPRINTF("    data: ");
     for (size_t i = 0; i < lst->capacity; i++)
     {
-        printf("%20lg ", lst->nodes[i].data);
+        LOGPRINTF("%20lg ", lst->nodes[i].data);
     }
-    printf("\n");
+    LOGPRINTF("\n");
 
-    printf("next: ");
+    LOGPRINTF("    next: ");
     for (size_t i = 0; i < lst->capacity; i++)
     {
-        printf("%20zu ", lst->nodes[i].next);
+        LOGPRINTF("%20zu ", lst->nodes[i].next);
     }
-    printf("\n");
+    LOGPRINTF("\n");
 
-    printf("prev: ");
+    LOGPRINTF("    prev: ");
     for (size_t i = 0; i < lst->capacity; i++)
     {
-        printf("%20zu ", lst->nodes[i].prev);
+        LOGPRINTF("%20zu ", lst->nodes[i].prev);
     }
-    printf("\n");
+    LOGPRINTF("\n");
 
+    LOGPRINTF("}\n");
+    LOGCLOSE();
 }
 /*)---------------------------------------------------------------------------*/
 
