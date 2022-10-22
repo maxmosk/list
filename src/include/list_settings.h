@@ -2,7 +2,11 @@
 #define LIST_SETTINGS_H_INCLUDED__
 
 
+#include <math.h>
 #include <stddef.h>
+
+
+#define DATA_POISON NAN
 
 
 typedef size_t listIndex_t;
