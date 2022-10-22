@@ -11,6 +11,7 @@ int main(void)
     scanf("%zu", &cap);
     listCtor(&myList, cap);
 
+    listDtor(&myList);
     return EXIT_SUCCESS;
 }
 

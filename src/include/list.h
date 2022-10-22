@@ -38,6 +38,8 @@ enum LIST_CODES
 
 enum LIST_CODES listCtor(list_t *lst, size_t capacity);
 
+enum LIST_CODES listDtor(list_t *lst);
+
 
 #endif /* LIST_H_INCLUDED__ */
 

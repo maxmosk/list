@@ -6,6 +6,8 @@ static enum LIST_CODES listInitNodes(list_t *lst);
 
 static listNode_t *listAlloc(size_t nmemb);
 
+static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb);
+
 
 /*(---------------------------------------------------------------------------*/
 enum LIST_CODES listCtor(list_t *lst, size_t capacity)
@@ -58,5 +60,30 @@ static listNode_t *listAlloc(size_t nmemb)
     listNode_t *buffer = calloc(nmemb + 1, sizeof *buffer);
 
     return buffer;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb)
+{
+    listNode_t *newbuffer = realloc(buffer, (nmemb + 1) * sizeof *buffer);
+
+    return newbuffer;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+enum LIST_CODES listDtor(list_t *lst)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+
+    free(lst->nodes);
+    lst->nodes = NULL;
+    lst->capacity = SIZE_MAX;
+    lst->dummy.next = NULL_INDEX;
+    lst->dummy.prev = NULL_INDEX;
+    lst->free = NULL_INDEX;
+
+    return LIST_SUCCESS;
 }
 /*)---------------------------------------------------------------------------*/
