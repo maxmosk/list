@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS_WARNINGS=-Wall -Wextra -Wfloat-equal -Wundef -Wshadow -Wpointer-arith \
     -Wcast-align -Wstrict-prototypes -Wstrict-overflow=2 -Wwrite-strings \
     -Waggregate-return -Wcast-qual -Wswitch-default -Wswitch-enum -Wconversion \
-    -Wunreachable-code -Wformat=2 -Werror -Winit-self -Wuninitialized \
+    -Wunreachable-code -Wformat=2 -Winit-self -Wuninitialized -Werror \
     -Wpointer-arith -Wold-style-definition -Wstrict-prototypes \
     -Wmissing-prototypes -Werror-implicit-function-declaration -Wlogical-op \
     -Wduplicated-cond -Wcast-qual -Wcast-align -Wformat-security \

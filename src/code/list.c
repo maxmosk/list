@@ -64,11 +64,12 @@ static listNode_t *listAlloc(size_t nmemb)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
-static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb)
+listElem_t *listIndex(list_t *lst, size_t index)
 {
-    listNode_t *newbuffer = realloc(buffer, (nmemb + 1) * sizeof *buffer);
-
-    return newbuffer;
+    CHECK(NULL != lst, NULL);
+    CHECK(NULL != lst->nodes, NULL);
+    
+    return &lst->nodes[index + 1].data;
 }
 /*)---------------------------------------------------------------------------*/
 
@@ -87,3 +88,13 @@ enum LIST_CODES listDtor(list_t *lst)
     return LIST_SUCCESS;
 }
 /*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb)
+{
+    listNode_t *newbuffer = realloc(buffer, (nmemb + 1) * sizeof *buffer);
+
+    return newbuffer;
+}
+/*)---------------------------------------------------------------------------*/
+
