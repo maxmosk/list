@@ -31,7 +31,8 @@ enum LIST_CODES
 
     LIST_NULLPTR = 1,
     LIST_NOMEM   = 2,
-    LIST_INITERR = 3
+    LIST_INITERR = 3,
+    LIST_SIZEERR = 4
 };
 
 

@@ -8,6 +8,7 @@ static enum LIST_CODES listInitNodes(list_t *lst);
 enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 {
     CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(SIZE_MAX != capacity, LIST_SIZEERR);
 
 
     lst->nodes = calloc(capacity + 1, sizeof lst->nodes[0]);
