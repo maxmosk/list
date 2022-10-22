@@ -2,6 +2,8 @@
 #define LIST_H_INCLUDED__
 
 
+#include <stddef.h>
+#include <stdlib.h>
 #include "list_settings.h"
 
 
@@ -24,7 +26,7 @@ typedef struct
 
 enum LIST_CODES
 {
-    LIST_SUCCESS = 0;
+    LIST_SUCCESS = 0,
 
 };
 

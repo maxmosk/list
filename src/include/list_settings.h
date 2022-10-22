@@ -2,6 +2,9 @@
 #define LIST_SETTINGS_H_INCLUDED__
 
 
+#include <stddef.h>
+
+
 typedef size_t listIndex_t;
 
 typedef double listElem_t;
