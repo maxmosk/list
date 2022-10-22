@@ -11,7 +11,7 @@ int main(void)
     scanf("%zu", &cap);
     listCtor(&myList, cap);
 
-    printf("%lg ... %lg\n", *listIndex(&myList, 0), *listIndex(&myList, cap - 1));
+    listPushBack(&myList, 12.5);
 
     listDtor(&myList);
     return EXIT_SUCCESS;

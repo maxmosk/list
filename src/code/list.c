@@ -8,6 +8,8 @@ static listNode_t *listAlloc(size_t nmemb);
 
 static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb);
 
+static void listDump(list_t *lst);
+
 
 /*(---------------------------------------------------------------------------*/
 enum LIST_CODES listCtor(list_t *lst, size_t capacity)
@@ -25,7 +27,7 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
     lst->nodes[NULL_INDEX].prev = NULL_INDEX;
     CHECK(LIST_SUCCESS == listInitNodes(lst), LIST_INITERR);
 
-    lst->free = 1;
+    lst->free = (capacity != 0) ? 1 : NULL_INDEX;
     lst->dummy.data = DATA_POISON;
     lst->dummy.next = NULL_INDEX;
     lst->dummy.prev = NULL_INDEX;
@@ -64,12 +66,35 @@ static listNode_t *listAlloc(size_t nmemb)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
-listElem_t *listIndex(list_t *lst, size_t index)
+listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 {
-    CHECK(NULL != lst, NULL);
-    CHECK(NULL != lst->nodes, NULL);
+    CHECK(NULL != lst, NULL_INDEX);
+    CHECK(NULL != lst->nodes, NULL_INDEX);
+
+
+    if (NULL_INDEX == lst->free)
+    {
+        listNode_t *newnodes = listRealloc(lst->nodes, lst->capacity + 5);
+        CHECK(NULL != newnodes, 0);
+
+        lst->nodes = newnodes;
+        lst->capacity += 5;
+    }
+
+
+    listDump(lst);
+    lst->nodes[lst->dummy.prev].next = lst->free;
+    lst->nodes[lst->nodes[lst->dummy.prev].next].prev = lst->dummy.next;
+    lst->dummy.prev = lst->nodes[lst->dummy.prev].next;
+    lst->nodes[lst->dummy.prev].next = NULL_INDEX;
+    lst->free = lst->nodes[lst->free].next;
     
-    return &lst->nodes[index + 1].data;
+    lst->nodes[lst->dummy.prev].data = newelem;
+    listDump(lst);
+
+
+
+    return lst->dummy.prev;
 }
 /*)---------------------------------------------------------------------------*/
 
@@ -95,6 +120,37 @@ static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb)
     listNode_t *newbuffer = realloc(buffer, (nmemb + 1) * sizeof *buffer);
 
     return newbuffer;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+static void listDump(list_t *lst)
+{
+    CHECK(NULL != lst, ;);
+    CHECK(NULL != lst->nodes, ;);
+
+    
+    printf("data: ");
+    for (size_t i = 0; i < lst->capacity; i++)
+    {
+        printf("%20lg ", lst->nodes[i].data);
+    }
+    printf("\n");
+
+    printf("next: ");
+    for (size_t i = 0; i < lst->capacity; i++)
+    {
+        printf("%20zu ", lst->nodes[i].next);
+    }
+    printf("\n");
+
+    printf("prev: ");
+    for (size_t i = 0; i < lst->capacity; i++)
+    {
+        printf("%20zu ", lst->nodes[i].prev);
+    }
+    printf("\n");
+
 }
 /*)---------------------------------------------------------------------------*/
 
