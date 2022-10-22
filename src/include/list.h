@@ -28,6 +28,7 @@ enum LIST_CODES
 {
     LIST_SUCCESS = 0,
 
+    LIST_NULLPTR = 1
 };
 
 
