@@ -4,14 +4,17 @@
 
 static enum LIST_CODES listInitNodes(list_t *lst);
 
+static listNode_t *listAlloc(size_t nmemb);
 
+
+/*(---------------------------------------------------------------------------*/
 enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 {
     CHECK(NULL != lst, LIST_NULLPTR);
     CHECK(SIZE_MAX != capacity, LIST_SIZEERR);
 
 
-    lst->nodes = calloc(capacity + 1, sizeof lst->nodes[0]);
+    lst->nodes = listAlloc(capacity);
     CHECK(NULL != lst->nodes, LIST_NOMEM);
 
     lst->capacity = capacity;
@@ -28,7 +31,9 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 
     return LIST_SUCCESS;
 }
+/*)---------------------------------------------------------------------------*/
 
+/*(---------------------------------------------------------------------------*/
 static enum LIST_CODES listInitNodes(list_t *lst)
 {
     CHECK(NULL != lst, LIST_NULLPTR);
@@ -45,4 +50,13 @@ static enum LIST_CODES listInitNodes(list_t *lst)
 
     return LIST_SUCCESS;
 }
+/*)---------------------------------------------------------------------------*/
 
+/*(---------------------------------------------------------------------------*/
+static listNode_t *listAlloc(size_t nmemb)
+{
+    listNode_t *buffer = calloc(nmemb + 1, sizeof *buffer);
+
+    return buffer;
+}
+/*)---------------------------------------------------------------------------*/
