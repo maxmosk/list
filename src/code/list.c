@@ -19,6 +19,7 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
     lst->nodes[NULL_INDEX].prev = NULL_INDEX;
     CHECK(listInitNodes(lst), LIST_INITERR);
 
+    lst->free = 1;
     lst->dummy.data = DATA_POISON;
     lst->dummy.next = NULL_INDEX;
     lst->dummy.prev = NULL_INDEX;
