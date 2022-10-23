@@ -17,6 +17,13 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
     CHECK(NULL != lst, LIST_NULLPTR);
     CHECK(SIZE_MAX != capacity, LIST_SIZEERR);
 
+    if (0 == capacity)
+    {
+        lst->nodes = NULL;
+        lst->free = NULL_INDEX;
+        lst->capacity = 0;
+        return LIST_SUCCESS;
+    }
 
     lst->nodes = listAlloc(capacity);
     CHECK(NULL != lst->nodes, LIST_NOMEM);
@@ -27,6 +34,7 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
     lst->nodes[NULL_INDEX].prev = NULL_INDEX;
 
     lst->free = NULL_INDEX;
+
     CHECK(LIST_SUCCESS == listInitNodes(lst, 1), LIST_INITERR);
     lst->free = 1;
 
@@ -67,17 +75,21 @@ static listNode_t *listAlloc(size_t nmemb)
 listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 {
     CHECK(NULL != lst, NULL_INDEX);
-    CHECK(NULL != lst->nodes, NULL_INDEX);
 
+    if (0 == lst->capacity)
+    {
+        enum LIST_CODES status = listCtor(lst, 4);
+        CHECK(LIST_SUCCESS == status, status);
+    }
 
     if (NULL_INDEX == lst->free)
     {
-        listNode_t *newnodes = listRealloc(lst->nodes, lst->capacity + 5);
+        listNode_t *newnodes = listRealloc(lst->nodes, lst->capacity + 4);
         CHECK(NULL != newnodes, NULL_INDEX);
         lst->nodes = newnodes;
 
         size_t oldcap = lst->capacity;
-        lst->capacity += 5;
+        lst->capacity += 4;
         CHECK(LIST_SUCCESS == listInitNodes(lst, oldcap + 1), NULL_INDEX);
         lst->free = oldcap + 1;
     }
