@@ -27,7 +27,7 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
     lst->nodes[NULL_INDEX].prev = NULL_INDEX;
 
     lst->free = NULL_INDEX;
-    CHECK(LIST_SUCCESS == listInitNodes(lst->nodes, 1), LIST_INITERR);
+    CHECK(LIST_SUCCESS == listInitNodes(lst, 1), LIST_INITERR);
     lst->free = 1;
 
 
