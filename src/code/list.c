@@ -48,7 +48,7 @@ static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start)
         lst->nodes[i].prev = INDEX_POISON;
     }
 
-    lst->nodes[lst->capacity - 1].next = lst->free;
+    lst->nodes[lst->capacity].next = lst->free;
 
     return LIST_SUCCESS;
 }
@@ -73,10 +73,13 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
     if (NULL_INDEX == lst->free)
     {
         listNode_t *newnodes = listRealloc(lst->nodes, lst->capacity + 5);
-        CHECK(NULL != newnodes, 0);
-
+        CHECK(NULL != newnodes, NULL_INDEX);
         lst->nodes = newnodes;
+
+        size_t oldcap = lst->capacity;
         lst->capacity += 5;
+        CHECK(LIST_SUCCESS == listInitNodes(lst, oldcap + 1), NULL_INDEX);
+        lst->free = oldcap + 1;
     }
 
 
@@ -112,7 +115,7 @@ enum LIST_CODES listDtor(list_t *lst)
 /*(---------------------------------------------------------------------------*/
 static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb)
 {
-    listNode_t *newbuffer = realloc(buffer, (nmemb + 1) * sizeof *buffer);
+    listNode_t *newbuffer = realloc(buffer, (nmemb + 1) * sizeof *newbuffer);
 
     return newbuffer;
 }

@@ -10,7 +10,14 @@ int main(void)
     size_t cap = 0;
     scanf("%zu", &cap);
     listCtor(&myList, cap);
-    listPushBack(&myList, 10.5);
+
+    int n = 0;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++)
+    {
+        listPushBack(&myList, 10.5);
+    }
+
     listDtor(&myList);
 
     return EXIT_SUCCESS;
