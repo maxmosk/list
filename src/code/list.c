@@ -136,21 +136,21 @@ static void listDump(const list_t *lst)
     LOGPRINTF("    free = %zu\n", lst->free);
 
     LOGPRINTF("    data: ");
-    for (size_t i = 0; i < lst->capacity; i++)
+    for (size_t i = 0; i < lst->capacity + 1; i++)
     {
         LOGPRINTF("%20lg ", lst->nodes[i].data);
     }
     LOGPRINTF("\n");
 
     LOGPRINTF("    next: ");
-    for (size_t i = 0; i < lst->capacity; i++)
+    for (size_t i = 0; i < lst->capacity + 1; i++)
     {
         LOGPRINTF("%20zu ", lst->nodes[i].next);
     }
     LOGPRINTF("\n");
 
     LOGPRINTF("    prev: ");
-    for (size_t i = 0; i < lst->capacity; i++)
+    for (size_t i = 0; i < lst->capacity + 1; i++)
     {
         LOGPRINTF("%20zu ", lst->nodes[i].prev);
     }
