@@ -63,7 +63,6 @@ static listNode_t *listAlloc(size_t nmemb)
 }
 /*)---------------------------------------------------------------------------*/
 
-#if 0
 /*(---------------------------------------------------------------------------*/
 listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 {
@@ -82,33 +81,19 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 
 
     listDump(lst);
-    if (lst->dummy.next == NULL_INDEX && lst->dummy.prev == NULL_INDEX)
-    {
-        lst->dummy.prev = lst->dummy.next = lst->free;
-        lst->free = lst->nodes[lst->free].next;
 
-        lst->nodes[lst->dummy.prev].next = NULL_INDEX;
-        lst->nodes[lst->dummy.prev].prev = NULL_INDEX;
-    }
-    else
-    {
-        lst->nodes[lst->dummy.prev].next = lst->free;
-        lst->free = lst->nodes[lst->free].next;
-
-        lst->nodes[lst->nodes[lst->dummy.prev].next].prev = lst->dummy.next;
-        lst->dummy.prev = lst->nodes[lst->dummy.prev].next;
-        lst->nodes[lst->dummy.prev].next = NULL_INDEX;
-    }
-
-    lst->nodes[lst->dummy.prev].data = newelem;
+    lst->nodes[lst->free].prev = lst->nodes[NULL_INDEX].prev;
+    lst->nodes[NULL_INDEX].prev = lst->free;
+    lst->free = lst->nodes[lst->free].next;
+    lst->nodes[lst->nodes[NULL_INDEX].prev].next = NULL_INDEX;
+    lst->nodes[lst->nodes[NULL_INDEX].prev].data = newelem;
 
     listDump(lst);
 
 
-    return lst->dummy.prev;
+    return lst->nodes[NULL_INDEX].prev;
 }
 /*)---------------------------------------------------------------------------*/
-#endif
 
 /*(---------------------------------------------------------------------------*/
 enum LIST_CODES listDtor(list_t *lst)
