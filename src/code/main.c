@@ -10,10 +10,8 @@ int main(void)
     size_t cap = 0;
     scanf("%zu", &cap);
     listCtor(&myList, cap);
-
-    listPushBack(&myList, 12.5);
-
     listDtor(&myList);
+
     return EXIT_SUCCESS;
 }
 

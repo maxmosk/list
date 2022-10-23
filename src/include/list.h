@@ -17,7 +17,6 @@ typedef struct
 
 typedef struct
 {
-    listNode_t dummy;
     listNode_t *nodes;
     size_t capacity;
 

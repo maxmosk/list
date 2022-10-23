@@ -2,7 +2,7 @@
 #include "list.h"
 
 
-static enum LIST_CODES listInitNodes(list_t *lst);
+static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start);
 
 static listNode_t *listAlloc(size_t nmemb);
 
@@ -25,12 +25,10 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
     lst->nodes[NULL_INDEX].data = DATA_POISON;
     lst->nodes[NULL_INDEX].next = NULL_INDEX;
     lst->nodes[NULL_INDEX].prev = NULL_INDEX;
-    CHECK(LIST_SUCCESS == listInitNodes(lst), LIST_INITERR);
 
-    lst->free = (capacity != 0) ? 1 : NULL_INDEX;
-    lst->dummy.data = DATA_POISON;
-    lst->dummy.next = NULL_INDEX;
-    lst->dummy.prev = NULL_INDEX;
+    lst->free = NULL_INDEX;
+    CHECK(LIST_SUCCESS == listInitNodes(lst->nodes, 1), LIST_INITERR);
+    lst->free = 1;
 
 
     return LIST_SUCCESS;
@@ -38,19 +36,19 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
-static enum LIST_CODES listInitNodes(list_t *lst)
+static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start)
 {
     CHECK(NULL != lst, LIST_NULLPTR);
-    CHECK(NULL != lst->nodes, LIST_NULLPTR);
+    CHECK(SIZE_MAX != start, LIST_SIZEERR);
 
-    for (listIndex_t i = 1; i <= lst->capacity; i++)
+    for (listIndex_t i = start; i <= lst->capacity; i++)
     {
         lst->nodes[i].data = DATA_POISON;
         lst->nodes[i].next = i + 1;
         lst->nodes[i].prev = INDEX_POISON;
     }
 
-    lst->nodes[lst->capacity - 1].next = NULL_INDEX;
+    lst->nodes[lst->capacity - 1].next = lst->free;
 
     return LIST_SUCCESS;
 }
@@ -65,6 +63,7 @@ static listNode_t *listAlloc(size_t nmemb)
 }
 /*)---------------------------------------------------------------------------*/
 
+#if 0
 /*(---------------------------------------------------------------------------*/
 listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 {
@@ -109,6 +108,7 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
     return lst->dummy.prev;
 }
 /*)---------------------------------------------------------------------------*/
+#endif
 
 /*(---------------------------------------------------------------------------*/
 enum LIST_CODES listDtor(list_t *lst)
@@ -118,8 +118,6 @@ enum LIST_CODES listDtor(list_t *lst)
     free(lst->nodes);
     lst->nodes = NULL;
     lst->capacity = SIZE_MAX;
-    lst->dummy.next = NULL_INDEX;
-    lst->dummy.prev = NULL_INDEX;
     lst->free = NULL_INDEX;
 
     return LIST_SUCCESS;
@@ -148,13 +146,6 @@ static void listDump(const list_t *lst)
 
     LOGPRINTF("    capacity = %zu\n", lst->capacity);
     LOGPRINTF("    free = %zu\n", lst->free);
-
-    LOGPRINTF("    dummy\n");
-    LOGPRINTF("    {\n");
-    LOGPRINTF("        data = %20lg\n", lst->dummy.data);
-    LOGPRINTF("        next = %20zu\n", lst->dummy.next);
-    LOGPRINTF("        prev = %20zu\n", lst->dummy.prev);
-    LOGPRINTF("    }\n");
 
     LOGPRINTF("    data: ");
     for (size_t i = 0; i < lst->capacity; i++)
