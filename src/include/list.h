@@ -43,6 +43,8 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem);
 
 enum LIST_CODES listDtor(list_t *lst);
 
+enum LIST_CODES listVerify(list_t *lst);
+
 
 #endif /* LIST_H_INCLUDED__ */
 

@@ -2,6 +2,8 @@
 #include "list.h"
 
 
+/*(===========================================================================*/
+
 static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start);
 
 static listNode_t *listAlloc(size_t nmemb);
@@ -12,6 +14,10 @@ static enum LIST_CODES listIncrease(list_t *lst, size_t incsize);
 
 static void listDump(const list_t *lst);
 
+/*)===========================================================================*/
+
+
+/*(===========================================================================*/
 
 /*(---------------------------------------------------------------------------*/
 enum LIST_CODES listCtor(list_t *lst, size_t capacity)
@@ -42,34 +48,6 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 
 
     return LIST_SUCCESS;
-}
-/*)---------------------------------------------------------------------------*/
-
-/*(---------------------------------------------------------------------------*/
-static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start)
-{
-    CHECK(NULL != lst, LIST_NULLPTR);
-    CHECK(SIZE_MAX != start, LIST_SIZEERR);
-
-    for (listIndex_t i = start; i <= lst->capacity; i++)
-    {
-        lst->nodes[i].data = DATA_POISON;
-        lst->nodes[i].next = i + 1;
-        lst->nodes[i].prev = INDEX_POISON;
-    }
-
-    lst->nodes[lst->capacity].next = lst->free;
-
-    return LIST_SUCCESS;
-}
-/*)---------------------------------------------------------------------------*/
-
-/*(---------------------------------------------------------------------------*/
-static listNode_t *listAlloc(size_t nmemb)
-{
-    listNode_t *buffer = calloc(nmemb + 1, sizeof *buffer);
-
-    return buffer;
 }
 /*)---------------------------------------------------------------------------*/
 
@@ -177,6 +155,46 @@ enum LIST_CODES listDtor(list_t *lst)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
+enum LIST_CODES listVerify(list_t *lst)
+{
+    return LIST_SUCCESS;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*)===========================================================================*/
+
+
+/*(===========================================================================*/
+
+/*(---------------------------------------------------------------------------*/
+static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(SIZE_MAX != start, LIST_SIZEERR);
+
+    for (listIndex_t i = start; i <= lst->capacity; i++)
+    {
+        lst->nodes[i].data = DATA_POISON;
+        lst->nodes[i].next = i + 1;
+        lst->nodes[i].prev = INDEX_POISON;
+    }
+
+    lst->nodes[lst->capacity].next = lst->free;
+
+    return LIST_SUCCESS;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+static listNode_t *listAlloc(size_t nmemb)
+{
+    listNode_t *buffer = calloc(nmemb + 1, sizeof *buffer);
+
+    return buffer;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
 static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb)
 {
     listNode_t *newbuffer = realloc(buffer, (nmemb + 1) * sizeof *newbuffer);
@@ -247,4 +265,6 @@ static void listDump(const list_t *lst)
     LOGCLOSE();
 }
 /*)---------------------------------------------------------------------------*/
+
+/*)===========================================================================*/
 
