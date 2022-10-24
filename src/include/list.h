@@ -39,6 +39,8 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity);
 
 listIndex_t listPushBack(list_t *lst, listElem_t newelem);
 
+listIndex_t listPushFront(list_t *lst, listElem_t newelem);
+
 enum LIST_CODES listDtor(list_t *lst);
 
 

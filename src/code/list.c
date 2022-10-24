@@ -95,18 +95,52 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
     }
 
 
-    listDump(lst);
-
     lst->nodes[lst->free].prev = lst->nodes[NULL_INDEX].prev;
     lst->nodes[NULL_INDEX].prev = lst->free;
     lst->free = lst->nodes[lst->free].next;
     lst->nodes[lst->nodes[NULL_INDEX].prev].next = NULL_INDEX;
     lst->nodes[lst->nodes[NULL_INDEX].prev].data = newelem;
 
+
+    return lst->nodes[NULL_INDEX].prev;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+listIndex_t listPushFront(list_t *lst, listElem_t newelem)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+
+
+    if (0 == lst->capacity)
+    {
+        enum LIST_CODES status = listCtor(lst, 4);
+        CHECK(LIST_SUCCESS == status, status);
+    }
+
+    if (NULL_INDEX == lst->free)
+    {
+        listNode_t *newnodes = listRealloc(lst->nodes, lst->capacity + 4);
+        CHECK(NULL != newnodes, NULL_INDEX);
+        lst->nodes = newnodes;
+
+        size_t oldcap = lst->capacity;
+        lst->capacity += 4;
+        CHECK(LIST_SUCCESS == listInitNodes(lst, oldcap + 1), NULL_INDEX);
+        lst->free = oldcap + 1;
+    }
+
+
+    listDump(lst);
+    lst->nodes[lst->free].next = lst->nodes[NULL_INDEX].next;
+    lst->nodes[NULL_INDEX].next = lst->free;
+    lst->free = lst->nodes[lst->free].next;
+    lst->nodes[lst->nodes[NULL_INDEX].next].prev = NULL_INDEX;
+    lst->nodes[lst->nodes[NULL_INDEX].prev].data = newelem;
     listDump(lst);
 
 
-    return lst->nodes[NULL_INDEX].prev;
+    return lst->nodes[NULL_INDEX].next;
 }
 /*)---------------------------------------------------------------------------*/
 
