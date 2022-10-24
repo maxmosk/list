@@ -97,7 +97,6 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
     }
 
 
-    listDump(lst);
     if (0 == lst->nodes[NULL_INDEX].next)
     {
         lst->nodes[NULL_INDEX].next = lst->nodes[NULL_INDEX].prev = lst->free;
@@ -115,7 +114,6 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
         lst->nodes[lst->nodes[NULL_INDEX].prev].next = NULL_INDEX;
         lst->nodes[lst->nodes[NULL_INDEX].prev].data = newelem;
     }
-    listDump(lst);
 
 
     return lst->nodes[NULL_INDEX].prev;
@@ -140,7 +138,6 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem)
     }
 
 
-    listDump(lst);
     if (0 == lst->nodes[NULL_INDEX].next)
     {
         lst->nodes[NULL_INDEX].next = lst->nodes[NULL_INDEX].prev = lst->free;
@@ -159,7 +156,6 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem)
         lst->nodes[lst->nodes[NULL_INDEX].next].prev = NULL_INDEX;
         lst->nodes[lst->nodes[NULL_INDEX].next].data = newelem;
     }
-    listDump(lst);
 
 
     return lst->nodes[NULL_INDEX].next;
