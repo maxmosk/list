@@ -162,12 +162,32 @@ enum LIST_CODES listVerify(list_t *lst)
 {
     CHECK(NULL != lst, LIST_NULLPTR);
     
+    listDump(lst);
     if (listEmpty(lst))
     {
         return LIST_SUCCESS;
     }
+    
+    if (NULL == lst->nodes)
+    {
+        lst->status |= INVALID_DATA_PTR;
+    }
+
+    if ((0 == lst->capacity) || (SIZE_MAX == lst->capacity))
+    {
+        lst->status |= INVALID_CAPACITY;
+    }
 
     return LIST_SUCCESS;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+bool listEmpty(const list_t *lst)
+{
+    CHECK(NULL != lst, true);
+
+    return (0 == lst->free) && (NULL == lst->nodes) && (0 == lst->capacity);
 }
 /*)---------------------------------------------------------------------------*/
 
@@ -251,25 +271,28 @@ static void listDump(const list_t *lst)
     LOGPRINTF("    free = %zu\n", lst->free);
 
     LOGPRINTF("    data: ");
-    for (size_t i = 0; i < lst->capacity + 1; i++)
+    if (NULL != lst->nodes)
     {
-        LOGPRINTF("%20lg ", lst->nodes[i].data);
-    }
-    LOGPRINTF("\n");
+        for (size_t i = 0; i < lst->capacity + 1; i++)
+        {
+            LOGPRINTF("%20lg ", lst->nodes[i].data);
+        }
+        LOGPRINTF("\n");
 
-    LOGPRINTF("    next: ");
-    for (size_t i = 0; i < lst->capacity + 1; i++)
-    {
-        LOGPRINTF("%20zu ", lst->nodes[i].next);
-    }
-    LOGPRINTF("\n");
+        LOGPRINTF("    next: ");
+        for (size_t i = 0; i < lst->capacity + 1; i++)
+        {
+            LOGPRINTF("%20zu ", lst->nodes[i].next);
+        }
+        LOGPRINTF("\n");
 
-    LOGPRINTF("    prev: ");
-    for (size_t i = 0; i < lst->capacity + 1; i++)
-    {
-        LOGPRINTF("%20zu ", lst->nodes[i].prev);
+        LOGPRINTF("    prev: ");
+        for (size_t i = 0; i < lst->capacity + 1; i++)
+        {
+            LOGPRINTF("%20zu ", lst->nodes[i].prev);
+        }
+        LOGPRINTF("\n");
     }
-    LOGPRINTF("\n");
 
     LOGPRINTF("}\n");
     LOGCLOSE();

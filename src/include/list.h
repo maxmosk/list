@@ -2,6 +2,7 @@
 #define LIST_H_INCLUDED__
 
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include "list_settings.h"
@@ -40,7 +41,8 @@ enum LIST_CODES
 
 enum LIST_STATUS
 {
-    DATA_POINTER = 1 << 0
+    INVALID_DATA_PTR = 1 << 0,
+    INVALID_CAPACITY = 1 << 1
 };
 
 
@@ -53,6 +55,8 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem);
 enum LIST_CODES listDtor(list_t *lst);
 
 enum LIST_CODES listVerify(list_t *lst);
+
+bool listEmpty(const list_t *lst);
 
 
 #endif /* LIST_H_INCLUDED__ */
