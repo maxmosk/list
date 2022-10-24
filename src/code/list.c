@@ -55,6 +55,7 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 {
     CHECK(NULL != lst, NULL_INDEX);
+    CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
     if (0 == lst->capacity)
     {
@@ -102,6 +103,7 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 listIndex_t listPushFront(list_t *lst, listElem_t newelem)
 {
     CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
 
     if (0 == lst->capacity)
@@ -144,6 +146,7 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem)
 enum LIST_CODES listDtor(list_t *lst)
 {
     CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(LIST_SUCCESS == listVerify(lst), LIST_INVALID);
 
     free(lst->nodes);
     lst->nodes = NULL;
@@ -157,6 +160,13 @@ enum LIST_CODES listDtor(list_t *lst)
 /*(---------------------------------------------------------------------------*/
 enum LIST_CODES listVerify(list_t *lst)
 {
+    CHECK(NULL != lst, LIST_NULLPTR);
+    
+    if (listEmpty(lst))
+    {
+        return LIST_SUCCESS;
+    }
+
     return LIST_SUCCESS;
 }
 /*)---------------------------------------------------------------------------*/

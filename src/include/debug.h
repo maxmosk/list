@@ -38,6 +38,7 @@ while (0)
 #define ASSERT(condition, message) do {} while (0)
 #endif /* NDEBUG */
 
+
 #ifndef NDEBUG_LOG
 #define LOGOPEN()                                               \
 FILE *log_opened = fopen("log.txt", "a");                        \
@@ -61,6 +62,7 @@ do                                                               \
 while (0)
 #else
 #endif
+
 
 #endif /* DEBUG_H_INCLUDED__ */
 

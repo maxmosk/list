@@ -15,12 +15,15 @@ typedef struct
     listIndex_t prev;
 } listNode_t;
 
+typedef uint_fast16_t listStatus_t;
+
 typedef struct
 {
     listNode_t *nodes;
     size_t capacity;
-
     listIndex_t free;
+
+    listStatus_t status;
 } list_t;
 
 
@@ -31,7 +34,13 @@ enum LIST_CODES
     LIST_NULLPTR = 1,
     LIST_NOMEM   = 2,
     LIST_INITERR = 3,
-    LIST_SIZEERR = 4
+    LIST_SIZEERR = 4,
+    LIST_INVALID = 5
+};
+
+enum LIST_STATUS
+{
+    DATA_POINTER = 1 << 0
 };
 
 
