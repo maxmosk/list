@@ -8,6 +8,7 @@
 #include "list_settings.h"
 
 
+/*(===========================================================================*/
 typedef struct
 {
     listElem_t data;
@@ -26,8 +27,10 @@ typedef struct
 
     listStatus_t status;
 } list_t;
+/*(===========================================================================*/
 
 
+/*(===========================================================================*/
 enum LIST_CODES
 {
     LIST_SUCCESS = 0,
@@ -44,8 +47,10 @@ enum LIST_STATUS
     INVALID_DATA_PTR = 1 << 0,
     INVALID_CAPACITY = 1 << 1
 };
+/*(===========================================================================*/
 
 
+/*(===========================================================================*/
 enum LIST_CODES listCtor(list_t *lst, size_t capacity);
 
 listIndex_t listPushBack(list_t *lst, listElem_t newelem);
@@ -57,6 +62,7 @@ enum LIST_CODES listDtor(list_t *lst);
 enum LIST_CODES listVerify(list_t *lst);
 
 bool listEmpty(const list_t *lst);
+/*(===========================================================================*/
 
 
 #endif /* LIST_H_INCLUDED__ */

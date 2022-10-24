@@ -3,7 +3,6 @@
 
 
 /*(===========================================================================*/
-
 static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start);
 
 static listNode_t *listAlloc(size_t nmemb);
@@ -13,12 +12,10 @@ static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb);
 static enum LIST_CODES listIncrease(list_t *lst, size_t incsize);
 
 static void listDump(const list_t *lst);
-
 /*)===========================================================================*/
 
 
 /*(===========================================================================*/
-
 /*(---------------------------------------------------------------------------*/
 enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 {
@@ -197,12 +194,10 @@ bool listEmpty(const list_t *lst)
     return (0 == lst->free) && (NULL == lst->nodes) && (0 == lst->capacity);
 }
 /*)---------------------------------------------------------------------------*/
-
 /*)===========================================================================*/
 
 
 /*(===========================================================================*/
-
 /*(---------------------------------------------------------------------------*/
 static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start)
 {
@@ -305,6 +300,5 @@ static void listDump(const list_t *lst)
     LOGCLOSE();
 }
 /*)---------------------------------------------------------------------------*/
-
 /*)===========================================================================*/
 
