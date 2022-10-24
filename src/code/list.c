@@ -96,11 +96,26 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
         lst->free = oldcap + 1;
     }
 
-    lst->nodes[lst->free].prev = lst->nodes[NULL_INDEX].prev;
-    lst->nodes[NULL_INDEX].prev = lst->free;
-    lst->free = lst->nodes[lst->free].next;
-    lst->nodes[lst->nodes[NULL_INDEX].prev].next = NULL_INDEX;
-    lst->nodes[lst->nodes[NULL_INDEX].prev].data = newelem;
+
+    listDump(lst);
+    if (0 == lst->nodes[NULL_INDEX].next)
+    {
+        lst->nodes[NULL_INDEX].next = lst->nodes[NULL_INDEX].prev = lst->free;
+        lst->free = lst->nodes[lst->free].next;
+        lst->nodes[lst->nodes[NULL_INDEX].prev].next =
+            lst->nodes[lst->nodes[NULL_INDEX].prev].prev = NULL_INDEX;
+        lst->nodes[lst->nodes[NULL_INDEX].next].data = newelem;
+    }
+    else
+    {
+        lst->nodes[lst->nodes[NULL_INDEX].prev].next = lst->free;
+        lst->nodes[lst->free].prev = lst->nodes[NULL_INDEX].prev;
+        lst->nodes[NULL_INDEX].prev = lst->free;
+        lst->free = lst->nodes[lst->free].next;
+        lst->nodes[lst->nodes[NULL_INDEX].prev].next = NULL_INDEX;
+        lst->nodes[lst->nodes[NULL_INDEX].prev].data = newelem;
+    }
+    listDump(lst);
 
 
     return lst->nodes[NULL_INDEX].prev;

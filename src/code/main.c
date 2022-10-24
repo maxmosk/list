@@ -15,7 +15,7 @@ int main(void)
     scanf("%d", &n);
     for (int i = 0; i < n; i++)
     {
-        listPushFront(&myList, 10.5);
+        listPushBack(&myList, 10.5);
     }
 
     listDtor(&myList);
