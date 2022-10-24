@@ -8,6 +8,8 @@ static listNode_t *listAlloc(size_t nmemb);
 
 static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb);
 
+static enum LIST_CODES listIncrease(list_t *lst, size_t incsize);
+
 static void listDump(const list_t *lst);
 
 
@@ -120,23 +122,17 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem)
 
     if (NULL_INDEX == lst->free)
     {
-        listNode_t *newnodes = listRealloc(lst->nodes, lst->capacity + 4);
-        CHECK(NULL != newnodes, NULL_INDEX);
-        lst->nodes = newnodes;
-
-        size_t oldcap = lst->capacity;
-        lst->capacity += 4;
-        CHECK(LIST_SUCCESS == listInitNodes(lst, oldcap + 1), NULL_INDEX);
-        lst->free = oldcap + 1;
+        CHECK(LIST_SUCCESS == listIncrease(lst, 1), NULL_INDEX);
     }
 
 
     listDump(lst);
+    listIndex_t newfree = lst->nodes[lst->free].next;
     lst->nodes[lst->free].next = lst->nodes[NULL_INDEX].next;
     lst->nodes[NULL_INDEX].next = lst->free;
-    lst->free = lst->nodes[lst->free].next;
+    lst->free = newfree;
     lst->nodes[lst->nodes[NULL_INDEX].next].prev = NULL_INDEX;
-    lst->nodes[lst->nodes[NULL_INDEX].prev].data = newelem;
+    lst->nodes[lst->nodes[NULL_INDEX].next].data = newelem;
     listDump(lst);
 
 
@@ -164,6 +160,29 @@ static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb)
     listNode_t *newbuffer = realloc(buffer, (nmemb + 1) * sizeof *newbuffer);
 
     return newbuffer;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+static enum LIST_CODES listIncrease(list_t *lst, size_t incsize)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(SIZE_MAX != incsize, LIST_SIZEERR);
+
+
+    CHECK(0 != incsize, LIST_SUCCESS);
+
+    listNode_t *newnodes = listRealloc(lst->nodes, lst->capacity + incsize);
+    CHECK(NULL != newnodes, LIST_NOMEM);
+    lst->nodes = newnodes;
+
+    size_t oldcap = lst->capacity;
+    lst->capacity += incsize;
+    CHECK(LIST_SUCCESS == listInitNodes(lst, oldcap + 1), LIST_INITERR);
+    lst->free = oldcap + 1;
+
+
+    return LIST_SUCCESS;
 }
 /*)---------------------------------------------------------------------------*/
 
