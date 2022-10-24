@@ -178,7 +178,14 @@ enum LIST_CODES listVerify(list_t *lst)
         lst->status |= INVALID_CAPACITY;
     }
 
-    return LIST_SUCCESS;
+    if (0 == lst->status)
+    {
+        return LIST_SUCCESS;
+    }
+    else
+    {
+        return LIST_INVALID;
+    }
 }
 /*)---------------------------------------------------------------------------*/
 
