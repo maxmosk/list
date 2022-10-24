@@ -45,7 +45,8 @@ enum LIST_CODES
 enum LIST_STATUS
 {
     INVALID_DATA_PTR = 1 << 0,
-    INVALID_CAPACITY = 1 << 1
+    INVALID_CAPACITY = 1 << 1,
+    INVALID_LINKING  = 1 << 2
 };
 /*(===========================================================================*/
 

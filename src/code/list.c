@@ -175,6 +175,18 @@ enum LIST_CODES listVerify(list_t *lst)
         lst->status |= INVALID_CAPACITY;
     }
 
+    listIndex_t node = NULL_INDEX;
+    for (size_t i = 0; (i < lst->capacity) && (lst->nodes[node].next != NULL_INDEX); i++)
+    {
+        node = lst->nodes[node].next;
+    }
+
+    if (NULL_INDEX != node)
+    {
+        lst->status |= INVALID_LINKING;
+    }
+
+
     if (0 == lst->status)
     {
         return LIST_SUCCESS;
