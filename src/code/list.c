@@ -139,6 +139,24 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem)
 }
 /*)---------------------------------------------------------------------------*/
 
+listIndex_t listIndex(list_t *lst, size_t index)
+{
+    CHECK(NULL != lst, NULL_INDEX);
+    CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
+
+    CHECK(index <= lst->capacity, NULL_INDEX);
+    CHECK(SIZE_MAX != index, NULL_INDEX);
+
+    listIndex_t iter = lst->nodes[NULL_INDEX].next;
+
+    for (size_t i = 0; (i < index) && (iter != NULL_INDEX); i++)
+    {
+        iter = lst->nodes[iter].next;
+    }
+
+    return iter;
+}
+
 /*(---------------------------------------------------------------------------*/
 listIndex_t listNext(list_t *lst, listIndex_t iter)
 {

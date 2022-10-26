@@ -61,6 +61,8 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem);
 
 listIndex_t listPushFront(list_t *lst, listElem_t newelem);
 
+listIndex_t listIndex(list_t *lst, size_t index);
+
 listIndex_t listNext(list_t *lst, listIndex_t iter);
 
 listIndex_t listPrev(list_t *lst, listIndex_t iter);
