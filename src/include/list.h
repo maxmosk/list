@@ -35,11 +35,13 @@ enum LIST_CODES
 {
     LIST_SUCCESS = 0,
 
-    LIST_NULLPTR = 1,
-    LIST_NOMEM   = 2,
-    LIST_INITERR = 3,
-    LIST_SIZEERR = 4,
-    LIST_INVALID = 5
+    LIST_NULLPTR   = 1,
+    LIST_NOMEM     = 2,
+    LIST_INITERR   = 3,
+    LIST_SIZEERR   = 4,
+    LIST_INVALID   = 5,
+    LIST_OUTRANGE  = 6,
+    LIST_WRONGITER = 7
 };
 
 enum LIST_STATUS
@@ -57,6 +59,8 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity);
 listIndex_t listPushBack(list_t *lst, listElem_t newelem);
 
 listIndex_t listPushFront(list_t *lst, listElem_t newelem);
+
+enum LIST_CODES listIter(list_t *lst, listIndex_t iter, listElem_t *dest);
 
 enum LIST_CODES listDtor(list_t *lst);
 

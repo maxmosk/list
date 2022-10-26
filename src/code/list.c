@@ -140,6 +140,21 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
+enum LIST_CODES listIter(list_t *lst, listIndex_t iter, listElem_t *dest)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(LIST_SUCCESS == listVerify(lst), LIST_INVALID);
+    CHECK(NULL != dest, LIST_NULLPTR);
+
+    CHECK(iter <= lst->capacity, LIST_OUTRANGE);
+    CHECK(INDEX_POISON != lst->nodes[iter].prev, LIST_WRONGITER);
+
+    *dest = lst->nodes[iter].data;
+    return LIST_SUCCESS;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
 enum LIST_CODES listDtor(list_t *lst)
 {
     CHECK(NULL != lst, LIST_NULLPTR);

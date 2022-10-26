@@ -15,7 +15,11 @@ int main(void)
     scanf("%d", &n);
     for (int i = 0; i < n; i++)
     {
-        listPushBack(&myList, 10.5);
+        listIndex_t ind = listPushBack(&myList, 10 * i);
+
+        listElem_t buf = NAN;
+        listIter(&myList, ind, &buf);
+        printf("[%d] = %lf\n", i, buf);
     }
 
     listDtor(&myList);
