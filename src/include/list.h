@@ -73,6 +73,10 @@ listIndex_t listPrev(list_t *lst, listIndex_t iter);
 
 enum LIST_CODES listIter(list_t *lst, listIndex_t iter, listElem_t *dest);
 
+enum LIST_CODES listBack(list_t *lst, listElem_t *dest);
+
+enum LIST_CODES listFront(list_t *lst, listElem_t *dest);
+
 enum LIST_CODES listDtor(list_t *lst);
 
 enum LIST_CODES listVerify(list_t *lst);

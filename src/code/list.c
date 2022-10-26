@@ -189,6 +189,20 @@ enum LIST_CODES listIter(list_t *lst, listIndex_t iter, listElem_t *dest)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
+enum LIST_CODES listBack(list_t *lst, listElem_t *dest)
+{
+    return listIter(lst, listPrev(lst, NULL_INDEX), dest);
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+enum LIST_CODES listFront(list_t *lst, listElem_t *dest)
+{
+    return listIter(lst, listNext(lst, NULL_INDEX), dest);
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
 enum LIST_CODES listDtor(list_t *lst)
 {
     CHECK(NULL != lst, LIST_NULLPTR);
