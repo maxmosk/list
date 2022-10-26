@@ -61,6 +61,10 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem);
 
 listIndex_t listPushFront(list_t *lst, listElem_t newelem);
 
+listIndex_t listNext(list_t *lst, listIndex_t iter);
+
+listIndex_t listPrev(list_t *lst, listIndex_t iter);
+
 enum LIST_CODES listIter(list_t *lst, listIndex_t iter, listElem_t *dest);
 
 enum LIST_CODES listDtor(list_t *lst);
