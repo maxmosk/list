@@ -54,3 +54,5 @@ dkms.conf
 #other
 build
 lib
+log.txt
+
