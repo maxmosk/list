@@ -2,6 +2,9 @@
 #include "list.h"
 
 
+static const char gvizbuf[] = "gvizbuffer";
+
+
 /*(===========================================================================*/
 static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start);
 
@@ -14,6 +17,8 @@ static enum LIST_CODES listIncrease(list_t *lst, size_t incsize);
 static void listDump(const list_t *lst);
 
 static void listCringe(void);
+
+static void listGraphDump(const list_t *lst, const char *filename);
 /*)===========================================================================*/
 
 
@@ -427,7 +432,15 @@ static void listDump(const list_t *lst)
     CHECK(NULL != lst, ;);
     CHECK(NULL != lst->nodes, ;);
 
-    LOGOPEN();
+    static size_t ngraphs = 0;
+
+    char namebuf[64] = "";
+    sprintf(namebuf, "graph%zu.jpg", ngraphs);
+    listGraphDump(lst, namebuf);
+    ngraphs++;
+
+    LOGOPEN("log.html");
+    LOGPRINTF("<pre>\n");
     
     LOGPRINTF("list_t [%p]\n", (const void *) lst);
     LOGPRINTF("{\n");
@@ -459,7 +472,11 @@ static void listDump(const list_t *lst)
         LOGPRINTF("\n");
     }
 
+    LOGPRINTF("<img src=\"%s\">\n", namebuf);
+
     LOGPRINTF("}\n");
+
+    LOGPRINTF("</pre>\n");
     LOGCLOSE();
 }
 /*)---------------------------------------------------------------------------*/
@@ -477,6 +494,39 @@ static void listCringe(void)
         scanf("%d", &buf);
     }
     while (buf != num);
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+static void listGraphDump(const list_t *lst, const char *filename)
+{
+    CHECK(NULL != filename, ;);
+    CHECK(NULL != lst, ;);
+    CHECK(NULL != lst->nodes, ;);
+    
+    FILE *dotfile = fopen(gvizbuf, "w");
+    CHECK(NULL != dotfile, ;);
+
+    fprintf(dotfile, "digraph");
+    fprintf(dotfile, "{");
+
+    fprintf(dotfile, "    \"front = %zu\"->", lst->nodes[NULL_INDEX].next);
+    listIndex_t node = lst->nodes[NULL_INDEX].next;
+    for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
+    {
+        fprintf(dotfile, "\"%zu %lg\n\"->", i - 1, lst->nodes[node].data);
+        node = lst->nodes[node].next;
+    }
+    fprintf(dotfile, "\"back = %zu\"", lst->nodes[NULL_INDEX].prev);
+    fprintf(dotfile, ";\n");
+
+    fprintf(dotfile, "}");
+    fclose(dotfile);
+
+    char cmdbuf[128] = "";
+
+    sprintf(cmdbuf, "dot %s -o %s -Tjpg", gvizbuf, filename);
+    system(cmdbuf);
 }
 /*)---------------------------------------------------------------------------*/
 /*)===========================================================================*/

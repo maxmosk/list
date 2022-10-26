@@ -40,8 +40,8 @@ while (0)
 
 
 #ifndef NDEBUG_LOG
-#define LOGOPEN()                                               \
-FILE *log_opened = fopen("log.txt", "a");                        \
+#define LOGOPEN(logfile_)                                       \
+FILE *log_opened = fopen(logfile_, "a");                         \
 do                                                                \
 {                                                                  \
     ASSERT(NULL != log_opened, "Log file opening");                 \
