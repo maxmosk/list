@@ -12,6 +12,8 @@ static listNode_t *listRealloc(listNode_t *buffer, size_t nmemb);
 static enum LIST_CODES listIncrease(list_t *lst, size_t incsize);
 
 static void listDump(const list_t *lst);
+
+static void listCringe(void);
 /*)===========================================================================*/
 
 
@@ -129,6 +131,10 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem)
 
 listIndex_t listIndex(list_t *lst, size_t index)
 {
+#ifdef CRINGE
+    listCringe();
+#endif
+
     CHECK(NULL != lst, NULL_INDEX);
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
@@ -396,6 +402,22 @@ static void listDump(const list_t *lst)
 
     LOGPRINTF("}\n");
     LOGCLOSE();
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+static void listCringe(void)
+{
+    srand(time(NULL));
+    int num = rand();
+    printf("Input %d to continue: ", num);
+
+    int buf = 0;
+    do
+    {
+        scanf("%d", &buf);
+    }
+    while (buf != num);
 }
 /*)---------------------------------------------------------------------------*/
 /*)===========================================================================*/
