@@ -146,6 +146,7 @@ enum LIST_CODES listIter(list_t *lst, listIndex_t iter, listElem_t *dest)
     CHECK(LIST_SUCCESS == listVerify(lst), LIST_INVALID);
     CHECK(NULL != dest, LIST_NULLPTR);
 
+    CHECK(NULL_INDEX != iter, LIST_NULLINDEX);
     CHECK(iter <= lst->capacity, LIST_OUTRANGE);
     CHECK(INDEX_POISON != lst->nodes[iter].prev, LIST_WRONGITER);
 
