@@ -203,6 +203,29 @@ enum LIST_CODES listFront(list_t *lst, listElem_t *dest)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
+enum LIST_CODES listRemove(list_t *lst, listIndex_t iter)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(LIST_SUCCESS == listVerify(lst), LIST_INVALID);
+
+    CHECK(NULL_INDEX != iter, LIST_NULLINDEX);
+    CHECK(iter <= lst->capacity, LIST_OUTRANGE);
+    CHECK(INDEX_POISON != lst->nodes[iter].prev, LIST_WRONGITER);
+
+    lst->nodes[lst->nodes[iter].prev].next = lst->nodes[iter].next;
+    lst->nodes[lst->nodes[iter].next].prev = lst->nodes[iter].prev;
+
+    lst->nodes[iter].data = DATA_POISON;
+    lst->nodes[iter].next = lst->free;
+    lst->nodes[iter].prev = INDEX_POISON;
+    lst->free = iter;
+
+
+    return LIST_SUCCESS;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
 enum LIST_CODES listDtor(list_t *lst)
 {
     CHECK(NULL != lst, LIST_NULLPTR);

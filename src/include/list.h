@@ -77,6 +77,8 @@ enum LIST_CODES listBack(list_t *lst, listElem_t *dest);
 
 enum LIST_CODES listFront(list_t *lst, listElem_t *dest);
 
+enum LIST_CODES listRemove(list_t *lst, listIndex_t iter);
+
 enum LIST_CODES listDtor(list_t *lst);
 
 enum LIST_CODES listVerify(list_t *lst);

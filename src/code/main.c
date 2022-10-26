@@ -15,11 +15,12 @@ int main(void)
     scanf("%d", &n);
     for (int i = 0; i < n; i++)
     {
-        listPushFront(&myList, 10 * i);
+        listIndex_t ind = listPushFront(&myList, 10 * i);
 
         listElem_t buf = NAN;
         listFront(&myList, &buf);
         printf("{%zu} = [%d] = %lf\n", listIndex(&myList, 0), i, buf);
+        listRemove(&myList, ind);
     }
 
     listDtor(&myList);
