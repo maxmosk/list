@@ -64,5 +64,14 @@ while (0)
 #endif
 
 
+#define PRINTLINE                                                         \
+do                                                                         \
+{                                                                           \
+    printf("On file %s function %s line %d\n", __FILE__, __func__, __LINE__);\
+    fflush(stdout);                                                           \
+}                                                                              \
+while (0)
+
+
 #endif /* DEBUG_H_INCLUDED__ */
 
