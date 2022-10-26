@@ -29,6 +29,7 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
         lst->nodes = NULL;
         lst->free = NULL_INDEX;
         lst->capacity = 0;
+        lst->linearized = true;
         return LIST_SUCCESS;
     }
 
@@ -44,6 +45,8 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 
     CHECK(LIST_SUCCESS == listInitNodes(lst, 1), LIST_INITERR);
     lst->free = 1;
+
+    lst->linearized = true;
 
 
     return LIST_SUCCESS;
@@ -70,6 +73,11 @@ listIndex_t listInsertAfter(list_t *lst, listIndex_t iter, listElem_t newelem)
         CHECK(LIST_SUCCESS == listIncrease(lst, 1), NULL_INDEX);
     }
     
+    if (NULL_INDEX != lst->nodes[iter].next)
+    {
+        lst->linearized = false;
+    }
+
     lst->nodes[lst->nodes[iter].next].prev = lst->free;
     listIndex_t newfree = lst->nodes[lst->free].next;
     lst->nodes[lst->free].next = lst->nodes[iter].next;
@@ -103,6 +111,11 @@ listIndex_t listInsertBefore(list_t *lst, listIndex_t iter, listElem_t newelem)
         CHECK(LIST_SUCCESS == listIncrease(lst, 1), NULL_INDEX);
     }
  
+    if (NULL_INDEX != lst->nodes[iter].prev)
+    {
+        lst->linearized = false;
+    }
+
     lst->nodes[lst->nodes[iter].prev].next = lst->free;
     lst->nodes[lst->free].prev = lst->nodes[NULL_INDEX].prev;
     lst->nodes[iter].prev = lst->free;
@@ -131,15 +144,20 @@ listIndex_t listPushFront(list_t *lst, listElem_t newelem)
 
 listIndex_t listIndex(list_t *lst, size_t index)
 {
-#ifdef CRINGE
-    listCringe();
-#endif
-
     CHECK(NULL != lst, NULL_INDEX);
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
     CHECK(index <= lst->capacity, NULL_INDEX);
     CHECK(SIZE_MAX != index, NULL_INDEX);
+
+    if (lst->linearized)
+    {
+        return index + 1;
+    }
+
+#ifdef CRINGE
+    listCringe();
+#endif
 
     listIndex_t iter = lst->nodes[NULL_INDEX].next;
 
@@ -226,6 +244,25 @@ enum LIST_CODES listRemove(list_t *lst, listIndex_t iter)
     lst->nodes[iter].prev = INDEX_POISON;
     lst->free = iter;
 
+    if (NULL_INDEX != lst->nodes[iter].next)
+    {
+        lst->linearized = false;
+    }
+
+    return LIST_SUCCESS;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+enum LIST_CODES listLinearize(list_t *lst)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(LIST_SUCCESS == listVerify(lst), LIST_INVALID);
+
+    if (lst->linearized)
+    {
+        return LIST_SUCCESS;
+    }
 
     return LIST_SUCCESS;
 }
