@@ -507,18 +507,32 @@ static void listGraphDump(const list_t *lst, const char *filename)
     FILE *dotfile = fopen(gvizbuf, "w");
     CHECK(NULL != dotfile, ;);
 
-    fprintf(dotfile, "digraph");
-    fprintf(dotfile, "{");
+    fprintf(dotfile, "digraph\n");
+    fprintf(dotfile, "{\n");
 
-    fprintf(dotfile, "    \"front = %zu\"->", lst->nodes[NULL_INDEX].next);
+    fprintf(dotfile, "    rankdir=LR;\n");
+
     listIndex_t node = lst->nodes[NULL_INDEX].next;
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
     {
-        fprintf(dotfile, "\"%zu %lg\n\"->", i - 1, lst->nodes[node].data);
+        fprintf(dotfile,
+                "    usednode%zu[shape=record,label=\" data=%lg | <next> next=%zu | prev=%zu \"];\n",
+                i - 1,
+                lst->nodes[node].data,
+                lst->nodes[node].next,
+                lst->nodes[node].prev
+                );
         node = lst->nodes[node].next;
     }
-    fprintf(dotfile, "\"back = %zu\"", lst->nodes[NULL_INDEX].prev);
-    fprintf(dotfile, ";\n");
+
+    fprintf(dotfile, "    \"front = %zu\"->", lst->nodes[NULL_INDEX].next);
+    node = lst->nodes[NULL_INDEX].next;
+    for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
+    {
+        fprintf(dotfile, "usednode%zu:<next>->", i - 1);
+        node = lst->nodes[node].next;
+    }
+    fprintf(dotfile, "\"back = %zu\"\n", lst->nodes[NULL_INDEX].prev);
 
     fprintf(dotfile, "}");
     fclose(dotfile);
