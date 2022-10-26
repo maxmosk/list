@@ -264,6 +264,28 @@ enum LIST_CODES listLinearize(list_t *lst)
         return LIST_SUCCESS;
     }
 
+
+    listNode_t *oldnodes = lst->nodes;
+    listNode_t *newnodes = listAlloc(lst->capacity);
+    CHECK(NULL != newnodes, LIST_NOMEM);
+    lst->nodes = newnodes;
+
+    lst->free = NULL_INDEX;
+    CHECK(LIST_SUCCESS == listInitNodes(lst, 1), LIST_INITERR);
+    lst->free = 1;
+
+    size_t i = 0;
+    listIndex_t iter = oldnodes[NULL_INDEX].next;
+    for (i = 0; (i < lst->capacity) && (iter != NULL_INDEX); i++)
+    {
+        listIndex_t status = listPushBack(lst, oldnodes[iter].data);
+        CHECK(NULL_INDEX != status, status);
+        iter = oldnodes[iter].next;
+    }
+
+    free(oldnodes);
+
+
     return LIST_SUCCESS;
 }
 /*)---------------------------------------------------------------------------*/
