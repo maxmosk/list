@@ -19,7 +19,7 @@ int main(void)
 
         listElem_t buf = NAN;
         listIter(&myList, ind, &buf);
-        printf("{%zu} = [%d] = %lf\n", listIndex(&myList, i), i, buf);
+        printf("{%zu} = [%d] = %lf\n", listIndex(&myList, 0), i, buf);
     }
 
     listDtor(&myList);

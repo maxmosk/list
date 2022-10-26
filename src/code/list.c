@@ -151,7 +151,6 @@ listIndex_t listNext(list_t *lst, listIndex_t iter)
     CHECK(NULL != lst, NULL_INDEX);
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
-    CHECK(NULL_INDEX != iter, NULL_INDEX);
     CHECK(iter <= lst->capacity, NULL_INDEX);
     CHECK(INDEX_POISON != lst->nodes[iter].prev, NULL_INDEX);
 
@@ -165,7 +164,6 @@ listIndex_t listPrev(list_t *lst, listIndex_t iter)
     CHECK(NULL != lst, NULL_INDEX);
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
-    CHECK(NULL_INDEX != iter, NULL_INDEX);
     CHECK(iter <= lst->capacity, NULL_INDEX);
     CHECK(INDEX_POISON != lst->nodes[iter].prev, NULL_INDEX);
 
