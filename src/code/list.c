@@ -49,6 +49,45 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
+listIndex_t listInsertAfter(list_t *lst, listIndex_t iter, listElem_t newelem)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
+
+    CHECK(iter <= lst->capacity, NULL_INDEX);
+    CHECK(INDEX_POISON != lst->nodes[iter].prev, NULL_INDEX);
+
+    if (0 == lst->capacity)
+    {
+        enum LIST_CODES status = listCtor(lst, 4);
+        CHECK(LIST_SUCCESS == status, status);
+    }
+
+    if (NULL_INDEX == lst->free)
+    {
+        CHECK(LIST_SUCCESS == listIncrease(lst, 1), NULL_INDEX);
+    }
+    
+    lst->nodes[lst->nodes[iter].next].prev = lst->free;
+    listIndex_t newfree = lst->nodes[lst->free].next;
+    lst->nodes[lst->free].next = lst->nodes[iter].next;
+    lst->nodes[iter].next = lst->free;
+    lst->free = newfree;
+    lst->nodes[lst->nodes[iter].next].prev = NULL_INDEX;
+    lst->nodes[lst->nodes[iter].next].data = newelem;
+
+    return lst->nodes[iter].next;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+listIndex_t listInsertBefore(list_t *lst, listIndex_t iter, listElem_t newelem)
+{
+    return NULL_INDEX;
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
 listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 {
     CHECK(NULL != lst, NULL_INDEX);
@@ -99,43 +138,7 @@ listIndex_t listPushBack(list_t *lst, listElem_t newelem)
 /*(---------------------------------------------------------------------------*/
 listIndex_t listPushFront(list_t *lst, listElem_t newelem)
 {
-    CHECK(NULL != lst, LIST_NULLPTR);
-    CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
-
-
-    if (0 == lst->capacity)
-    {
-        enum LIST_CODES status = listCtor(lst, 4);
-        CHECK(LIST_SUCCESS == status, status);
-    }
-
-    if (NULL_INDEX == lst->free)
-    {
-        CHECK(LIST_SUCCESS == listIncrease(lst, 1), NULL_INDEX);
-    }
-
-
-    if (0 == lst->nodes[NULL_INDEX].next)
-    {
-        lst->nodes[NULL_INDEX].next = lst->nodes[NULL_INDEX].prev = lst->free;
-        lst->free = lst->nodes[lst->free].next;
-        lst->nodes[lst->nodes[NULL_INDEX].prev].next =
-            lst->nodes[lst->nodes[NULL_INDEX].prev].prev = NULL_INDEX;
-        lst->nodes[lst->nodes[NULL_INDEX].next].data = newelem;
-    }
-    else
-    {
-        lst->nodes[lst->nodes[NULL_INDEX].next].prev = lst->free;
-        listIndex_t newfree = lst->nodes[lst->free].next;
-        lst->nodes[lst->free].next = lst->nodes[NULL_INDEX].next;
-        lst->nodes[NULL_INDEX].next = lst->free;
-        lst->free = newfree;
-        lst->nodes[lst->nodes[NULL_INDEX].next].prev = NULL_INDEX;
-        lst->nodes[lst->nodes[NULL_INDEX].next].data = newelem;
-    }
-
-
-    return lst->nodes[NULL_INDEX].next;
+    return listInsertAfter(lst, NULL_INDEX, newelem);
 }
 /*)---------------------------------------------------------------------------*/
 
