@@ -15,7 +15,7 @@ int main(void)
     scanf("%d", &n);
     for (int i = 0; i < n; i++)
     {
-        listIndex_t ind = listPushBack(&myList, 10 * i);
+        listIndex_t ind = listPushFront(&myList, 10 * i);
 
         listElem_t buf = NAN;
         listIter(&myList, ind, &buf);
