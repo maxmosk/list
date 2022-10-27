@@ -618,11 +618,7 @@ static void listGraphDump(const list_t *lst, const char *filename)
     char cmdbuf[128] = "";
 
     sprintf(cmdbuf, "dot %s -o %s -Tjpg", gvizbuf, filename);
-    if (system(cmdbuf))
-    {
-        printf("Fuck you!\n");
-        abort();
-    }
+    CHECK(0 == system(cmdbuf), ;);
 }
 /*)---------------------------------------------------------------------------*/
 /*)===========================================================================*/
