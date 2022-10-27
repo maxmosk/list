@@ -433,11 +433,8 @@ static void listDump(const list_t *lst)
     CHECK(NULL != lst->nodes, ;);
 
     static size_t ngraphs = 0;
-
     char namebuf[64] = "";
     sprintf(namebuf, "graph%zu.jpg", ngraphs);
-    listGraphDump(lst, namebuf);
-    ngraphs++;
 
     LOGOPEN("log.html");
     LOGPRINTF("<pre>\n");
@@ -478,6 +475,10 @@ static void listDump(const list_t *lst)
 
     LOGPRINTF("</pre>\n");
     LOGCLOSE();
+
+
+    listGraphDump(lst, namebuf);
+    ngraphs++;
 }
 /*)---------------------------------------------------------------------------*/
 
@@ -516,7 +517,8 @@ static void listGraphDump(const list_t *lst, const char *filename)
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
     {
         fprintf(dotfile,
-                "    usednode%zu[shape=record,label=\" data=%lg | <next> next=%zu | prev=%zu \"];\n",
+                "    usednode%zu[shape=record,label=\" index=%zu | data=%lg | <next> next=%zu | <prev> prev= \"];\n", 
+                i,
                 i - 1,
                 lst->nodes[node].data,
                 lst->nodes[node].next,
@@ -525,14 +527,51 @@ static void listGraphDump(const list_t *lst, const char *filename)
         node = lst->nodes[node].next;
     }
 
-    fprintf(dotfile, "    \"front = %zu\"->", lst->nodes[NULL_INDEX].next);
+    fprintf(dotfile, "    front[shape=\"octagon\",label=\"front %zu\"];\n", lst->nodes[NULL_INDEX].next);
+    fprintf(dotfile, "    back[shape=\"octagon\",label=\"back %zu\"];\n", lst->nodes[NULL_INDEX].prev);
+
+    size_t listlen = 0;
     node = lst->nodes[NULL_INDEX].next;
-    for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
+    for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++, listlen++)
     {
-        fprintf(dotfile, "usednode%zu:<next>->", i - 1);
+        if (1 == i)
+        {
+            fprintf(dotfile, "    front->");
+        }
+
+        fprintf(dotfile, "usednode%zu:next", i);
         node = lst->nodes[node].next;
+
+        if (NULL_INDEX != node)
+        {
+            fprintf(dotfile, "->");
+        }
+        else
+        {
+            fprintf(dotfile, ";\n");
+        }
     }
-    fprintf(dotfile, "\"back = %zu\"\n", lst->nodes[NULL_INDEX].prev);
+
+    node = lst->nodes[NULL_INDEX].prev;
+    for (size_t i = listlen; (i >= 1) && (node != NULL_INDEX); i--)
+    {
+        if (listlen == i)
+        {
+            fprintf(dotfile, "    back->");
+        }
+
+        fprintf(dotfile, "usednode%zu:prev", i);
+        node = lst->nodes[node].prev;
+
+        if (NULL_INDEX != node)
+        {
+            fprintf(dotfile, "->");
+        }
+        else
+        {
+            fprintf(dotfile, ";\n");
+        }
+    }
 
     fprintf(dotfile, "}");
     fclose(dotfile);
@@ -540,7 +579,11 @@ static void listGraphDump(const list_t *lst, const char *filename)
     char cmdbuf[128] = "";
 
     sprintf(cmdbuf, "dot %s -o %s -Tjpg", gvizbuf, filename);
-    system(cmdbuf);
+    if (system(cmdbuf))
+    {
+        printf("Fuck you!\n");
+        abort();
+    }
 }
 /*)---------------------------------------------------------------------------*/
 /*)===========================================================================*/
