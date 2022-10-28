@@ -442,7 +442,7 @@ static void listDump(const list_t *lst)
 
     LOGOPEN("log.html");
     LOGPRINTF("<pre>\n");
-    LOGPRINTF("<style>body {background-color: white;}</style>\n");
+    LOGPRINTF("<style>body {background-color:white;font-size:20px;}</style>\n");
     
     LOGPRINTF("list_t [<b style=\"color:red;\">%p</b>]\n", (const void *) lst);
     LOGPRINTF("{\n");
@@ -491,15 +491,15 @@ static void listDump(const list_t *lst)
 static void listCringe(void)
 {
     srand(time(NULL));
-    int num = rand();
-    printf("Input %d to continue: ", num);
+    char src = (char) rand();
+    printf("Input %c to continue: ", src);
 
-    int buf = 0;
+    char buf = 0;
     do
     {
-        scanf("%d", &buf);
+        scanf("%c", &buf);
     }
-    while (buf != num);
+    while (buf != src);
 }
 /*)---------------------------------------------------------------------------*/
 
