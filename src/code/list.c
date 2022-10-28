@@ -2,6 +2,15 @@
 #include "list.h"
 
 
+/*(===========================================================================*/
+#define DATA(list, iter) list->nodes[iter].data
+
+#define NEXT(list, iter) list->nodes[iter].next
+
+#define PREV(list, iter) list->nodes[iter].prev
+/*)===========================================================================*/
+
+
 static const char gvizbuf[] = "gvizbuffer";
 
 
@@ -42,9 +51,9 @@ enum LIST_CODES listCtor(list_t *lst, size_t capacity)
     CHECK(NULL != lst->nodes, LIST_NOMEM);
 
     lst->capacity = capacity;
-    lst->nodes[NULL_INDEX].data = DATA_POISON;
-    lst->nodes[NULL_INDEX].next = NULL_INDEX;
-    lst->nodes[NULL_INDEX].prev = NULL_INDEX;
+    DATA(lst, NULL_INDEX) = DATA_POISON;
+    NEXT(lst, NULL_INDEX) = NULL_INDEX;
+    PREV(lst, NULL_INDEX) = NULL_INDEX;
 
     lst->free = NULL_INDEX;
 
