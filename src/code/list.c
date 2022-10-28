@@ -442,6 +442,7 @@ static void listDump(const list_t *lst)
 
     LOGOPEN("log.html");
     LOGPRINTF("<pre>\n");
+    LOGPRINTF("<style>body {background-color: white;}</style>\n");
     
     LOGPRINTF("list_t [%p]\n", (const void *) lst);
     LOGPRINTF("{\n");
