@@ -521,7 +521,9 @@ static void listGraphDump(const list_t *lst, const char *filename)
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
     {
         fprintf(dotfile,
-                "    usednode%zu[style=\"rounded\",shape=record,label=\" index=%zu | data=%lg | <next> next=%zu | <prev> prev= %zu \"];\n", 
+                "    usednode%zu[style=\"rounded\",shape=record,label="
+                    "\" physical index=%zu | data=%lg | <next> next=%zu "
+                    "| <prev> prev= %zu \"];\n", 
                 i,
                 i - 1,
                 lst->nodes[node].data,
@@ -531,8 +533,10 @@ static void listGraphDump(const list_t *lst, const char *filename)
         node = lst->nodes[node].next;
     }
 
-    fprintf(dotfile, "    front[shape=\"octagon\",label=\"front = %zu\"];\n", lst->nodes[NULL_INDEX].next);
-    fprintf(dotfile, "    back[shape=\"octagon\",label=\"back = %zu\"];\n", lst->nodes[NULL_INDEX].prev);
+    fprintf(dotfile, "    front[shape=\"octagon\",label=\"front = %zu\"];\n",
+            lst->nodes[NULL_INDEX].next);
+    fprintf(dotfile, "    back[shape=\"octagon\",label=\"back = %zu\"];\n",
+            lst->nodes[NULL_INDEX].prev);
 
     size_t listlen = 0;
     node = lst->nodes[NULL_INDEX].next;
@@ -584,7 +588,9 @@ static void listGraphDump(const list_t *lst, const char *filename)
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
     {
         fprintf(dotfile,
-                "    freenode%zu[style=\"rounded\",shape=record,label=\" index=%zu | data=%lg | <next> next=%zu | <prev> prev= %zu \"];\n", 
+                "    freenode%zu[style=\"rounded\",shape=record,label="
+                        "\" physical index=%zu | data=%lg | <next> next=%zu "
+                        "| <prev> prev= %zu \"];\n", 
                 i,
                 i - 1,
                 lst->nodes[node].data,
