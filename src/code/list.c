@@ -74,7 +74,7 @@ listIndex_t listInsertAfter(list_t *lst, listIndex_t iter, listElem_t newelem)
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
     CHECK(iter <= lst->capacity, NULL_INDEX);
-    CHECK(INDEX_POISON != lst->nodes[iter].prev, NULL_INDEX);
+    CHECK(INDEX_POISON != PREV(lst, iter), NULL_INDEX);
 
     if (0 == lst->capacity)
     {
@@ -87,21 +87,21 @@ listIndex_t listInsertAfter(list_t *lst, listIndex_t iter, listElem_t newelem)
         CHECK(LIST_SUCCESS == listIncrease(lst, 1), NULL_INDEX);
     }
     
-    if (NULL_INDEX != lst->nodes[iter].next)
+    if (NULL_INDEX != NEXT(lst, iter))
     {
         lst->linearized = false;
     }
 
-    lst->nodes[lst->nodes[iter].next].prev = lst->free;
-    listIndex_t newfree = lst->nodes[lst->free].next;
-    lst->nodes[lst->free].next = lst->nodes[iter].next;
-    lst->nodes[iter].next = lst->free;
+    PREV(lst, NEXT(lst, iter)) = lst->free;
+    listIndex_t newfree = NEXT(lst, lst->free);
+    NEXT(lst, lst->free) = NEXT(lst, iter);
+    NEXT(lst, iter) = lst->free;
     lst->free = newfree;
-    lst->nodes[lst->nodes[iter].next].prev = iter;
-    lst->nodes[lst->nodes[iter].next].data = newelem;
+    PREV(lst, NEXT(lst, iter)) = iter;
+    DATA(lst, NEXT(lst, iter)) = newelem;
 
 
-    return lst->nodes[iter].next;
+    return NEXT(lst, iter);
 }
 /*)---------------------------------------------------------------------------*/
 
@@ -112,7 +112,7 @@ listIndex_t listInsertBefore(list_t *lst, listIndex_t iter, listElem_t newelem)
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
     CHECK(iter <= lst->capacity, NULL_INDEX);
-    CHECK(INDEX_POISON != lst->nodes[iter].prev, NULL_INDEX);
+    CHECK(INDEX_POISON != PREV(lst, iter), NULL_INDEX);
 
     if (0 == lst->capacity)
     {
@@ -130,15 +130,15 @@ listIndex_t listInsertBefore(list_t *lst, listIndex_t iter, listElem_t newelem)
         lst->linearized = false;
     }
 
-    lst->nodes[lst->nodes[iter].prev].next = lst->free;
-    lst->nodes[lst->free].prev = lst->nodes[NULL_INDEX].prev;
-    lst->nodes[iter].prev = lst->free;
-    lst->free = lst->nodes[lst->free].next;
-    lst->nodes[lst->nodes[iter].prev].next = iter;
-    lst->nodes[lst->nodes[iter].prev].data = newelem;
+    NEXT(lst, PREV(lst, iter)) = lst->free;
+    PREV(lst, lst->free) = PREV(lst, NULL_INDEX);
+    PREV(lst, iter) = lst->free;
+    lst->free = NEXT(lst, lst->free);
+    NEXT(lst, PREV(lst, iter)) = iter;
+    DATA(lst, PREV(lst, iter)) = newelem;
     
 
-    return lst->nodes[iter].prev;
+    return PREV(lst, iter);
 }
 /*)---------------------------------------------------------------------------*/
 
@@ -173,11 +173,11 @@ listIndex_t listIndex(list_t *lst, size_t index)
     listCringe();
 #endif
 
-    listIndex_t iter = lst->nodes[NULL_INDEX].next;
+    listIndex_t iter = NEXT(lst, NULL_INDEX);
 
     for (size_t i = 0; (i < index) && (iter != NULL_INDEX); i++)
     {
-        iter = lst->nodes[iter].next;
+        iter = NEXT(lst, iter);
     }
 
     return iter;
@@ -190,9 +190,9 @@ listIndex_t listNext(list_t *lst, listIndex_t iter)
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
     CHECK(iter <= lst->capacity, NULL_INDEX);
-    CHECK(INDEX_POISON != lst->nodes[iter].prev, NULL_INDEX);
+    CHECK(INDEX_POISON != PREV(lst, iter), NULL_INDEX);
 
-    return lst->nodes[iter].next;
+    return NEXT(lst, iter);
 }
 /*)---------------------------------------------------------------------------*/
 
@@ -203,11 +203,10 @@ listIndex_t listPrev(list_t *lst, listIndex_t iter)
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
     CHECK(iter <= lst->capacity, NULL_INDEX);
-    CHECK(INDEX_POISON != lst->nodes[iter].prev, NULL_INDEX);
+    CHECK(INDEX_POISON != PREV(lst, iter), NULL_INDEX);
 
-    return lst->nodes[iter].prev;
+    return PREV(lst, iter);
 }
-
 /*)---------------------------------------------------------------------------*/
 
 /*(---------------------------------------------------------------------------*/
@@ -219,9 +218,9 @@ enum LIST_CODES listIter(list_t *lst, listIndex_t iter, listElem_t *dest)
 
     CHECK(NULL_INDEX != iter, LIST_NULLINDEX);
     CHECK(iter <= lst->capacity, LIST_OUTRANGE);
-    CHECK(INDEX_POISON != lst->nodes[iter].prev, LIST_WRONGITER);
+    CHECK(INDEX_POISON != PREV(lst, iter), LIST_WRONGITER);
 
-    *dest = lst->nodes[iter].data;
+    *dest = DATA(lst, iter);
     return LIST_SUCCESS;
 }
 /*)---------------------------------------------------------------------------*/
@@ -248,17 +247,17 @@ enum LIST_CODES listRemove(list_t *lst, listIndex_t iter)
 
     CHECK(NULL_INDEX != iter, LIST_NULLINDEX);
     CHECK(iter <= lst->capacity, LIST_OUTRANGE);
-    CHECK(INDEX_POISON != lst->nodes[iter].prev, LIST_WRONGITER);
+    CHECK(INDEX_POISON != PREV(lst, iter), LIST_WRONGITER);
 
-    lst->nodes[lst->nodes[iter].prev].next = lst->nodes[iter].next;
-    lst->nodes[lst->nodes[iter].next].prev = lst->nodes[iter].prev;
+    NEXT(lst, PREV(lst, iter)) = NEXT(lst, iter);
+    PREV(lst, NEXT(lst, iter)) = PREV(lst, iter);
 
-    lst->nodes[iter].data = DATA_POISON;
-    lst->nodes[iter].next = lst->free;
-    lst->nodes[iter].prev = INDEX_POISON;
+    DATA(lst, iter) = DATA_POISON;
+    NEXT(lst, iter) = lst->free;
+    PREV(lst, iter) = INDEX_POISON;
     lst->free = iter;
 
-    if (NULL_INDEX != lst->nodes[iter].next)
+    if (NULL_INDEX != NEXT(lst, iter))
     {
         lst->linearized = false;
     }
@@ -344,10 +343,10 @@ enum LIST_CODES listVerify(list_t *lst)
         lst->status |= INVALID_CAPACITY;
     }
 
-    listIndex_t node = lst->nodes[NULL_INDEX].next;
+    listIndex_t node = NEXT(lst, NULL_INDEX);
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
     {
-        node = lst->nodes[node].next;
+        node = NEXT(lst, node);
     }
 
     if (NULL_INDEX != node)
