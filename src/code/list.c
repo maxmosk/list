@@ -444,32 +444,32 @@ static void listDump(const list_t *lst)
     LOGPRINTF("<pre>\n");
     LOGPRINTF("<style>body {background-color: white;}</style>\n");
     
-    LOGPRINTF("list_t [%p]\n", (const void *) lst);
+    LOGPRINTF("list_t [<b style=\"color:red;\">%p</b>]\n", (const void *) lst);
     LOGPRINTF("{\n");
 
-    LOGPRINTF("    capacity = %zu\n", lst->capacity);
-    LOGPRINTF("    free = %zu\n", lst->free);
+    LOGPRINTF("    capacity = <b style=\"color:red;\">%zu</b>\n", lst->capacity);
+    LOGPRINTF("    free = <b style=\"color:red;\">%zu</b>\n", lst->free);
 
     LOGPRINTF("    data: ");
     if (NULL != lst->nodes)
     {
         for (size_t i = 0; i < lst->capacity + 1; i++)
         {
-            LOGPRINTF("%20lg ", lst->nodes[i].data);
+            LOGPRINTF("<b style=\"color:red;\">%20lg</b> ", lst->nodes[i].data);
         }
         LOGPRINTF("\n");
 
         LOGPRINTF("    next: ");
         for (size_t i = 0; i < lst->capacity + 1; i++)
         {
-            LOGPRINTF("%20zu ", lst->nodes[i].next);
+            LOGPRINTF("<b style=\"color:green;\">%20zu</b> ", lst->nodes[i].next);
         }
         LOGPRINTF("\n");
 
         LOGPRINTF("    prev: ");
         for (size_t i = 0; i < lst->capacity + 1; i++)
         {
-            LOGPRINTF("%20zu ", lst->nodes[i].prev);
+            LOGPRINTF("<b style=\"color:blue;\">%20zu</b> ", lst->nodes[i].prev);
         }
         LOGPRINTF("\n");
     }
@@ -522,10 +522,11 @@ static void listGraphDump(const list_t *lst, const char *filename)
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
     {
         fprintf(dotfile,
-                "    usednode%zu[style=\"rounded\",shape=record,label="
-                    "\" physical index=%zu | data=%lg | <next> next=%zu "
+                "    usednode%zu[style=\"rounded\",shape=record,color=\"red\",label="
+                    "\" physical index=%zu | index=%zu | data=%lg | <next> next=%zu "
                     "| <prev> prev= %zu \"];\n", 
                 i,
+                node,
                 i - 1,
                 lst->nodes[node].data,
                 lst->nodes[node].next,
@@ -589,10 +590,11 @@ static void listGraphDump(const list_t *lst, const char *filename)
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
     {
         fprintf(dotfile,
-                "    freenode%zu[style=\"rounded\",shape=record,label="
-                        "\" physical index=%zu | data=%lg | <next> next=%zu "
+                "    freenode%zu[style=\"rounded\",shape=record,color=\"blue\",label="
+                        "\" physical index=%zu | index=%zu | data=%lg | <next> next=%zu "
                         "| <prev> prev= %zu \"];\n", 
                 i,
+                node,
                 i - 1,
                 lst->nodes[node].data,
                 lst->nodes[node].next,
