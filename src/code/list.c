@@ -269,6 +269,10 @@ enum LIST_CODES listLinearize(list_t *lst)
         return LIST_SUCCESS;
     }
 
+#ifdef CRINGE
+    listCringe();
+#endif
+
 
     listNode_t *oldnodes = lst->nodes;
     listNode_t *newnodes = listAlloc(lst->capacity);
