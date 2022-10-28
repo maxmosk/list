@@ -125,7 +125,7 @@ listIndex_t listInsertBefore(list_t *lst, listIndex_t iter, listElem_t newelem)
         CHECK(LIST_SUCCESS == listIncrease(lst, 1), NULL_INDEX);
     }
  
-    if (NULL_INDEX != lst->nodes[iter].prev)
+    if (NULL_INDEX != PREV(lst, iter))
     {
         lst->linearized = false;
     }
@@ -386,12 +386,12 @@ static enum LIST_CODES listInitNodes(list_t *lst, listIndex_t start)
 
     for (listIndex_t i = start; i <= lst->capacity; i++)
     {
-        lst->nodes[i].data = DATA_POISON;
-        lst->nodes[i].next = i + 1;
-        lst->nodes[i].prev = INDEX_POISON;
+        DATA(lst, i) = DATA_POISON;
+        NEXT(lst, i) = i + 1;
+        PREV(lst, i) = INDEX_POISON;
     }
 
-    lst->nodes[lst->capacity].next = lst->free;
+    NEXT(lst, lst->capacity) = lst->free;
 
     return LIST_SUCCESS;
 }
@@ -463,21 +463,21 @@ static void listDump(const list_t *lst)
     {
         for (size_t i = 0; i < lst->capacity + 1; i++)
         {
-            LOGPRINTF("<b style=\"color:red;\">%20lg</b> ", lst->nodes[i].data);
+            LOGPRINTF("<b style=\"color:red;\">%20lg</b> ", DATA(lst, i));
         }
         LOGPRINTF("\n");
 
         LOGPRINTF("    next: ");
         for (size_t i = 0; i < lst->capacity + 1; i++)
         {
-            LOGPRINTF("<b style=\"color:green;\">%20zu</b> ", lst->nodes[i].next);
+            LOGPRINTF("<b style=\"color:green;\">%20zu</b> ", NEXT(lst, i));
         }
         LOGPRINTF("\n");
 
         LOGPRINTF("    prev: ");
         for (size_t i = 0; i < lst->capacity + 1; i++)
         {
-            LOGPRINTF("<b style=\"color:blue;\">%20zu</b> ", lst->nodes[i].prev);
+            LOGPRINTF("<b style=\"color:blue;\">%20zu</b> ", PREV(lst, i));
         }
         LOGPRINTF("\n");
     }
@@ -526,7 +526,7 @@ static void listGraphDump(const list_t *lst, const char *filename)
 
     fprintf(dotfile, "    rankdir=LR;\n");
 
-    listIndex_t node = lst->nodes[NULL_INDEX].next;
+    listIndex_t node = NEXT(lst, NULL_INDEX);
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
     {
         fprintf(dotfile,
@@ -536,20 +536,21 @@ static void listGraphDump(const list_t *lst, const char *filename)
                 i,
                 node,
                 i - 1,
-                lst->nodes[node].data,
-                lst->nodes[node].next,
-                lst->nodes[node].prev
+                DATA(lst, node),
+                NEXT(lst, node),
+                PREV(lst, node)
                 );
-        node = lst->nodes[node].next;
+
+        node = NEXT(lst, node);
     }
 
     fprintf(dotfile, "    front[shape=\"octagon\",label=\"front = %zu\"];\n",
-            lst->nodes[NULL_INDEX].next);
+            NEXT(lst, NULL_INDEX));
     fprintf(dotfile, "    back[shape=\"octagon\",label=\"back = %zu\"];\n",
-            lst->nodes[NULL_INDEX].prev);
+            PREV(lst, NULL_INDEX));
 
     size_t listlen = 0;
-    node = lst->nodes[NULL_INDEX].next;
+    node = NEXT(lst, NULL_INDEX);
     for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++, listlen++)
     {
         if (1 == i)
@@ -558,7 +559,7 @@ static void listGraphDump(const list_t *lst, const char *filename)
         }
 
         fprintf(dotfile, "usednode%zu:next", i);
-        node = lst->nodes[node].next;
+        node = NEXT(lst, node);
 
         if (NULL_INDEX != node)
         {
@@ -570,7 +571,7 @@ static void listGraphDump(const list_t *lst, const char *filename)
         }
     }
 
-    node = lst->nodes[NULL_INDEX].prev;
+    node = PREV(lst, NULL_INDEX);
     for (size_t i = listlen; (i >= 1) && (node != NULL_INDEX); i--)
     {
         if (listlen == i)
@@ -579,7 +580,7 @@ static void listGraphDump(const list_t *lst, const char *filename)
         }
 
         fprintf(dotfile, "usednode%zu:prev", i);
-        node = lst->nodes[node].prev;
+        node = PREV(lst, node);
 
         if (NULL_INDEX != node)
         {
@@ -604,11 +605,12 @@ static void listGraphDump(const list_t *lst, const char *filename)
                 i,
                 node,
                 i - 1,
-                lst->nodes[node].data,
-                lst->nodes[node].next,
-                lst->nodes[node].prev
+                DATA(lst, node),
+                NEXT(lst, node),
+                PREV(lst, node)
                 );
-        node = lst->nodes[node].next;
+
+        node = NEXT(lst, node);
     }
 
     node = lst->free;
@@ -620,7 +622,7 @@ static void listGraphDump(const list_t *lst, const char *filename)
         }
 
         fprintf(dotfile, "freenode%zu:next", i);
-        node = lst->nodes[node].next;
+        node = NEXT(lst, node);
 
         if (NULL_INDEX != node)
         {
