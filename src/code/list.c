@@ -374,6 +374,22 @@ bool listEmpty(const list_t *lst)
     return (0 == lst->free) && (NULL == lst->nodes) && (0 == lst->capacity);
 }
 /*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+enum LIST_CODES listClear(list_t *lst)
+{
+    CHECK(NULL != lst, LIST_NULLPTR);
+    CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
+
+    free(lst->nodes);
+    lst->nodes = NULL;
+
+    lst->free = NULL_INDEX;
+    lst->capacity = 0;
+
+    return LIST_SUCCESS;
+}
+/*)---------------------------------------------------------------------------*/
 /*)===========================================================================*/
 
 

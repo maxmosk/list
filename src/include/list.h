@@ -88,6 +88,8 @@ enum LIST_CODES listDtor(list_t *lst);
 
 enum LIST_CODES listVerify(list_t *lst);
 
+enum LIST_CODES listClear(list_t *lst);
+
 bool listEmpty(const list_t *lst);
 /*(===========================================================================*/
 
