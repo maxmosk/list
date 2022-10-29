@@ -76,13 +76,15 @@ listIndex_t listInsertAfter(list_t *lst, listIndex_t iter, listElem_t newelem)
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
     CHECK(iter <= lst->capacity, NULL_INDEX);
-    CHECK(INDEX_POISON != PREV(lst, iter), NULL_INDEX);
 
     if (0 == lst->capacity)
     {
         enum LIST_CODES status = listCtor(lst, 4);
         CHECK(LIST_SUCCESS == status, status);
     }
+
+    CHECK(INDEX_POISON != PREV(lst, iter), NULL_INDEX);
+
 
     if (NULL_INDEX == lst->free)
     {
@@ -114,13 +116,15 @@ listIndex_t listInsertBefore(list_t *lst, listIndex_t iter, listElem_t newelem)
     CHECK(LIST_SUCCESS == listVerify(lst), NULL_INDEX);
 
     CHECK(iter <= lst->capacity, NULL_INDEX);
-    CHECK(INDEX_POISON != PREV(lst, iter), NULL_INDEX);
 
     if (0 == lst->capacity)
     {
         enum LIST_CODES status = listCtor(lst, 4);
         CHECK(LIST_SUCCESS == status, status);
     }
+
+    CHECK(INDEX_POISON != PREV(lst, iter), NULL_INDEX);
+
 
     if (NULL_INDEX == lst->free)
     {
@@ -454,7 +458,7 @@ static enum LIST_CODES listIncrease(list_t *lst, size_t incsize)
 static void listDump(const list_t *lst)
 {
     CHECK(NULL != lst, ;);
-    CHECK(NULL != lst->nodes, ;);
+
 
     static size_t ngraphs = 0;
     char namebuf[64] = "";
@@ -528,7 +532,12 @@ static void listGraphDump(const list_t *lst, const char *filename)
 {
     CHECK(NULL != filename, ;);
     CHECK(NULL != lst, ;);
-    CHECK(NULL != lst->nodes, ;);
+    
+
+    if (NULL == lst->nodes)
+    {
+        return;
+    }
     
     FILE *dotfile = fopen(gvizbuf, "w");
     CHECK(NULL != dotfile, ;);
