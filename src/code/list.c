@@ -609,7 +609,7 @@ static void listGraphDump(const list_t *lst, const char *filename)
         }
         else
         {
-            fprintf(dotfile, ";\n");
+            fprintf(dotfile, "[color=\"red\"];\n");
         }
     }
 
@@ -651,7 +651,7 @@ static void listGraphDump(const list_t *lst, const char *filename)
         }
         else
         {
-            fprintf(dotfile, ";\n");
+            fprintf(dotfile, "[color=\"blue\"];\n");
         }
     }
 
