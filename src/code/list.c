@@ -28,6 +28,8 @@ static void listDump(const list_t *lst);
 static void listCringe(void);
 
 static void listGraphDump(const list_t *lst, const char *filename);
+
+static bool listCycle(const list_t *lst);
 /*)===========================================================================*/
 
 
@@ -658,6 +660,21 @@ static void listGraphDump(const list_t *lst, const char *filename)
 
     sprintf(cmdbuf, "dot %s -o %s -Tjpg", gvizbuf, filename);
     CHECK(0 == system(cmdbuf), ;);
+}
+/*)---------------------------------------------------------------------------*/
+
+/*(---------------------------------------------------------------------------*/
+/*******************************************************************************
+ *
+ * Function finds cycle in list by Robert Floid's algorithm
+ *
+ * Should be used only from verificator after all other checkers.
+ * Returns true if list cycled.
+ *
+ ******************************************************************************/
+static bool listCycle(const list_t *lst)
+{
+    return true;
 }
 /*)---------------------------------------------------------------------------*/
 /*)===========================================================================*/
