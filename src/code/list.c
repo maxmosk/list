@@ -345,13 +345,7 @@ enum LIST_CODES listVerify(list_t *lst)
         lst->status |= INVALID_CAPACITY;
     }
 
-    listIndex_t node = NEXT(lst, NULL_INDEX);
-    for (size_t i = 1; (i <= lst->capacity) && (node != NULL_INDEX); i++)
-    {
-        node = NEXT(lst, node);
-    }
-
-    if (NULL_INDEX != node)
+    if (listCycle(lst))
     {
         lst->status |= INVALID_LINKING;
     }
@@ -666,15 +660,25 @@ static void listGraphDump(const list_t *lst, const char *filename)
 /*(---------------------------------------------------------------------------*/
 /*******************************************************************************
  *
- * Function finds cycle in list by Robert Floid's algorithm
+ * Function finds cycle in list by any algorithm with linear time from list len.
  *
- * Should be used only from verificator after all other checkers.
+ * Should be used only from verificator after all other checkers. Be careful.
  * Returns true if list cycled.
  *
  ******************************************************************************/
 static bool listCycle(const list_t *lst)
 {
-    return true;
+    size_t tortoise = 0, hare = 0;
+    for (
+            tortoise = 0, hare = 0;
+            (tortoise != hare) && (NULL_INDEX != hare) && (NULL_INDEX != NEXT(lst, hare));
+            hare = NEXT(lst, NEXT(lst, hare)), tortoise = NEXT(lst, tortoise)
+        )
+    {
+        ;
+    }
+
+    return (NULL_INDEX != hare) && (tortoise == hare);
 }
 /*)---------------------------------------------------------------------------*/
 /*)===========================================================================*/
